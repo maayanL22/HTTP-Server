@@ -2,8 +2,8 @@ import socket
 import os
 import pathlib
 
-DEFAULT_URL = 'index.html'
-IP = '127.0.0.1'
+DEFAULT_URL = # enter your default URL
+IP = # should ne localhost
 PORT = 80
 REDIRECTION_DICTIONARY = {
     '\\forbidden.txt': '\\allowed.txt'
@@ -15,7 +15,6 @@ SOCKET_TIMEOUT = 150
 def get_file_data(filename):
     """ Get data from file """
     prepath = str(pathlib.Path().absolute()) + '\\'
-    # f = open(filename)
 
     with open(prepath + filename, 'rb') as f:
         r = f.read()
@@ -30,20 +29,17 @@ def handle_client_request(resource, client_socket):
         url = DEFAULT_URL
     else:
         url = resource
-    # print("line 28")
     # TO DO: check if URL had been redirected, not available or other error code. For example:
     if url in REDIRECTION_DICTIONARY:
         # TO DO: send 302 redirection response
         response = "HTTP/1.0 302 - Moved Temporarily, please redirect to-" + REDIRECTION_DICTIONARY[url] + "\r\n"
         client_socket.send(response.encode())
         return
-    # print("line 35")
     if url in FORBIDDEN_LIST:
         client_socket.send("HTTP/1.0 403 - Forbidden\r\n".encode())
         return
     # TO DO: extract requested file tupe from URL (html, jpg etc)
     if 'html' in url:
-        # print("line 41 html")
         filetype = 'html'
     elif 'jpg' in url:
         filetype = 'jpg'
@@ -53,9 +49,8 @@ def handle_client_request(resource, client_socket):
         filetype = 'css'
     else:
         filetype = 'else'
-    # print("line 51")
-    if '\\machshefufi' in url:
-        data = get_file_data('machshefufi.jpg')
+    if '\\pic' in url:
+        data = get_file_data() # enter path to jpg file inside the brackets
         client_socket.send(data)
         return
     if '\\calculate-next' in url:
@@ -67,8 +62,8 @@ def handle_client_request(resource, client_socket):
                     n = int(numl[1])
                     client_socket.send(str(n + 1).encode())
                     return
-                elif numl[1] == 'kaki':
-                    client_socket.send("kashkish".encode())
+                elif numl[1] == 'hello':
+                    client_socket.send("hola".encode())
                     return
                 else:
                     client_socket.send("400 - Bad Request".encode())
@@ -84,11 +79,8 @@ def handle_client_request(resource, client_socket):
     elif filetype == 'css':
         http_header = "HTTP/1.0 200 OK\r\n Content-Type: text/css\r\n"
     else:  # unknown request
-        # print("line 63")
         client_socket.send("HTTP/1.0 500 - Internal Server Error\r\n".encode())
-        # print("line 65")
         return
-    # print("line 67")
     # TO DO: read the data from the file
     data = get_file_data(url)
     # http_response = http_header + data
@@ -117,9 +109,6 @@ def validate_http_request(request):
         return False, ''
     path = words[1]
     chng = list(path)
-    # for char1 in chng:
-    # if char1 == '/':
-    # char1 = '\''
     length = len(chng)
     i = 0
     while i < length:
@@ -130,7 +119,7 @@ def validate_http_request(request):
     prepath = str(pathlib.Path().absolute())
     # if not os.listdir(winpath) and os.path.exists('C:\\' + winpath):
         # return False, '403'
-    if '\\machshefufi' in winpath:
+    if '\\pic' in winpath:
         return True, winpath
     if '\\calculate-next' in winpath:
         return True, winpath
